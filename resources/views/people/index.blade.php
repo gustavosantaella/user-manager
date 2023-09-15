@@ -64,23 +64,29 @@
                                             <td>{{ $people->sex }}</td>
                                             <td>{{ $people->age }}</td>
                                             <td>{{ $people->dni }}</td>
-                                            <td>{{ date('d/m/Y', strtotime($people->date_birth)) }}</td>
+                                            <td>
+                                                @if ($people->date_birth)
+                                                    {{ date('d/m/Y', strtotime($people->date_birth)) }}
+                                                @else
+                                                @endif
+                                            </td>
 
                                             <td>
-                                                <form action="{{ route('people.destroy', $people->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary "
-                                                        href="{{ route('people.show', $people->id) }}"><i
-                                                            class="fa fa-fw fa-eye"></i> {{ __('Mostrar') }}</a>
-                                                    <a class="btn btn-sm btn-success"
-                                                        href="{{ route('people.edit', $people->id) }}"><i
-                                                            class="fa fa-fw fa-edit"></i> {{ __('Editar') }}</a>
+                                                <form action="{{ route('people.destroy', $people->id) }}" method="POST"
+                                                    class="d-flex align-items-center">
+                                                    <a class="mr-2" href="{{ route('people.show', $people->id) }}"><i
+                                                            class="fa fa-fw fa-eye text-primary"></i></a>
+                                                    <a class="mr-2" href="{{ route('people.edit', $people->id) }}"><i
+                                                            class="fa fa-fw fa-edit text-success"></i></a>
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')"><i
-                                                            class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
+                                                    <button type="submit" class="btn btn-link"
+                                                        onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')">
+                                                        <i class="fa fa-fw fa-trash text-danger"></i>
+                                                    </button>
                                                 </form>
                                             </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -88,7 +94,7 @@
                         </div>
                     </div>
                 </div>
-
+                {{--  {!! $people->links() !!} --}}
             </div>
         </div>
     </div>

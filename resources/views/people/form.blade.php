@@ -54,9 +54,11 @@
             </div>
             <div class="form-group col-md-3">
                 {{ Form::label('Fecha de nacimiento') }}
-                {{ Form::date('date_birth', $people->date_birth, ['class' => 'form-control' . ($errors->has('date_birth') ? ' is-invalid' : ''), 'placeholder' => 'Date Birth']) }}
+                {{ Form::date('date_birth', $people->date_birth ? $people->date_birth : null, ['class' => 'form-control' . ($errors->has('date_birth') ? ' is-invalid' : ''), 'placeholder' => 'Date Birth']) }}
                 {!! $errors->first('date_birth', '<div class="invalid-feedback">:message</div>') !!}
             </div>
+
+
         </div>
 
 
