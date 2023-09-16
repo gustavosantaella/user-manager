@@ -19,7 +19,7 @@ class PeopleController extends Controller
      */
     public function index()
     {
-        $people = People::paginate(20);
+        $people = People::paginate();
 
         return view('people.index', compact('people'))
             ->with('i', (request()->input('page', 1) - 1) * $people->perPage());
@@ -46,16 +46,7 @@ class PeopleController extends Controller
     {
         request()->validate(People::$rules);
 
-        // Crea una instancia de People con los datos proporcionados
-        $peopleData = $request->only(['name', 'lastname', 'email', 'province', 'zip_code', 'direction', 'sex', 'age', 'dni']);
-
-        // Verifica si se proporciona la fecha de nacimiento en el formulario
-        if ($request->filled('date_birth')) {
-            $peopleData['date_birth'] = $request->input('date_birth');
-        }
-
-        // Crea el registro en la base de datos
-        $people = People::create($peopleData);
+        $people = People::create($request->all());
 
         return redirect()->route('people.index')
             ->with('success', 'People created successfully.');
@@ -69,7 +60,7 @@ class PeopleController extends Controller
      */
     public function show($id)
     {
-        $people = People::findOrFail($id);
+        $people = People::find($id);
 
         return view('people.show', compact('people'));
     }
@@ -82,7 +73,7 @@ class PeopleController extends Controller
      */
     public function edit($id)
     {
-        $people = People::findOrFail($id);
+        $people = People::find($id);
 
         return view('people.edit', compact('people'));
     }
@@ -96,28 +87,12 @@ class PeopleController extends Controller
      */
     public function update(Request $request, People $people)
     {
-        // Valida los campos requeridos y otras reglas de validación
-        $request->validate([
-            'name' => 'required|string|max:255',
-            // Otras reglas de validación para otros campos si los hay
-        ]);
+        request()->validate(People::$rules);
 
-        // Actualiza los datos de People con los valores proporcionados en el formulario
-        $peopleData = $request->only(['name', 'lastname', 'email', 'province', 'zip_code', 'direction', 'sex', 'age', 'dni']);
-
-        // Verifica si se proporciona la fecha de nacimiento en el formulario
-        if ($request->filled('date_birth')) {
-            $peopleData['date_birth'] = $request->input('date_birth');
-        } else {
-            // Si no se proporciona fecha de nacimiento, establece el campo como null
-            $peopleData['date_birth'] = null;
-        }
-
-        // Actualiza el registro en la base de datos
-        $people->update($peopleData);
+        $people->update($request->all());
 
         return redirect()->route('people.index')
-            ->with('success', 'People updated successfully.');
+            ->with('success', 'People updated successfully');
     }
 
     /**
@@ -127,7 +102,7 @@ class PeopleController extends Controller
      */
     public function destroy($id)
     {
-        $people = People::findOrFail($id)->delete();
+        $people = People::find($id)->delete();
 
         return redirect()->route('people.index')
             ->with('success', 'People deleted successfully');
