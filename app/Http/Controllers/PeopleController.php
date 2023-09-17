@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PeopleExport;
 use App\Http\Controllers\Controller;
+use App\Imports\PeopleImport;
 use App\Models\People;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Class PeopleController
@@ -165,5 +168,15 @@ class PeopleController extends Controller
 
         return redirect()->route('people.index')
             ->with('success', 'People deleted successfully');
+    }
+    public function export()
+    {
+        return Excel::download(new PeopleExport, 'people.xlsx');
+    }
+    public function import()
+    {
+        Excel::import(new PeopleImport, request()->file('file'));
+
+        return redirect()->back()->with('success', 'Datos importados correctamente.');
     }
 }

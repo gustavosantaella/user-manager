@@ -19,16 +19,15 @@
                                 <form action="{{ route('people.index') }}" method="GET" class="form-inline">
                                     <!-- Input de búsqueda por nombre, con el nombre "search" -->
                                     <div class="form-group">
-                                        <label for="search">Buscar por nombre:</label>
                                         <input type="text" class="form-control" id="search" name="search"
-                                            value="{{ request('search') }}">
+                                            value="{{ request('search') }}" placeholder="Buscar: ">
                                     </div>
 
                                     <!-- Multiselect para los filtros -->
                                     <div class="form-group ml-3">
-                                        <label for="filters">Filtrar por:</label>
                                         <select class="form-control select2" id="filters" name="filters[]"
-                                            multiple="multiple">
+                                            placeholder="Filtrar:" multiple="multiple">
+                                            <option disabled value="">Filtrar: </option>
                                             <option value="name" @if (in_array('name', request('filters', []))) selected @endif>Nombre
                                             </option>
                                             <option value="lastname" @if (in_array('lastname', request('filters', []))) selected @endif>
@@ -43,13 +42,66 @@
 
                                     <!-- Botón de búsqueda -->
                                     <button type="submit" class="btn btn-primary ml-3">Buscar</button>
+
+
+
                                 </form>
+
                             </div>
+
                             <div class="float-right">
-                                <a href="{{ route('people.create') }}" class="btn btn-primary btn-sm float-right"
+                                <a href="{{ route('people.create') }}" class="btn btn-primary btn-sm float-right ml-2"
                                     data-placement="left">
                                     {{ __('Crear nuevo') }}
                                 </a>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-warning btn-sm float-right ml-2" data-toggle="modal"
+                                    data-target="#staticBackdrop">
+                                    Importar datos
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false"
+                                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">importar datos</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{ route('people.import') }}" method="POST"
+                                                    enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroupFileAddon01">Subir
+                                                                xlsx</span>
+                                                        </div>
+                                                        <div class="custom-file">
+                                                            <input type="file" class="custom-file-input"
+                                                                id="inputGroupFile01"
+                                                                aria-describedby="inputGroupFileAddon01" name="file">
+                                                            <label class="custom-file-label"
+                                                                for="inputGroupFile01">Seleccionar archivo: </label>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">Importar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{{ route('people.export') }}" target="_blank"
+                                    class="btn btn-success btn-sm float-right ml-2">Exportar datos</a>
+
                             </div>
                         </div>
                     </div>
@@ -178,6 +230,7 @@
                             </table>
                         </div>
                     </div>
+
                 </div>
                 {{--  {!! $people->links() !!} --}}
             </div>
