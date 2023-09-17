@@ -17,12 +17,69 @@ class PeopleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $people = People::paginate();
+        $query = People::query();
+
+        // Filtrar por nombre (name)
+        if ($request->has('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+
+        // Filtrar por apellido (lastname)
+        if ($request->has('lastname')) {
+            $query->where('lastname', 'like', '%' . $request->input('lastname') . '%');
+        }
+
+        // Filtrar por email
+        if ($request->has('email')) {
+            $query->where('email', 'like', '%' . $request->input('email') . '%');
+        }
+
+        // Filtrar por provincia
+        if ($request->has('province')) {
+            $query->where('province', 'like', '%' . $request->input('province') . '%');
+        }
+
+        // Filtrar por código postal (zip_code)
+        if ($request->has('zip_code')) {
+            $query->where('zip_code', 'like', '%' . $request->input('zip_code') . '%');
+        }
+
+        // Filtrar por dirección (direction)
+        if ($request->has('direction')) {
+            $query->where('direction', 'like', '%' . $request->input('direction') . '%');
+        }
+
+        // Filtrar por sexo (sex)
+        if ($request->has('sex')) {
+            $query->where('sex', $request->input('sex'));
+        }
+
+        // Filtrar por edad (age)
+        if ($request->has('age')) {
+            $query->where('age', $request->input('age'));
+        }
+
+        // Filtrar por DNI
+        if ($request->has('dni')) {
+            $query->where('dni', 'like', '%' . $request->input('dni') . '%');
+        }
+
+        // Función de búsqueda
+        if ($request->has('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('email', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $people = $query->paginate();
 
         return view('people.index', compact('people'))
-            ->with('i', (request()->input('page', 1) - 1) * $people->perPage());
+            ->with('i', ($request->input('page', 1) - 1) * $people->perPage());
     }
 
     /**
@@ -85,14 +142,16 @@ class PeopleController extends Controller
      * @param  People $people
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, People $people)
+    public function update(Request $request, $id)
     {
         request()->validate(People::$rules);
 
-        $people->update($request->all());
+        $people = People::find($id);
+        $people->fill($request->all());
+        $people->save();
 
         return redirect()->route('people.index')
-            ->with('success', 'People updated successfully');
+            ->with('success', 'People updated successfully.');
     }
 
     /**
