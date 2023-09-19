@@ -77,8 +77,12 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             {{ Form::label('Fecha de nacimiento') }}
-                                            {{ Form::date('date_birth', $people->date_birth, ['class' => 'form-control' . ($errors->has('date_birth') ? ' is-invalid' : ''), 'placeholder' => 'Date Birth', 'disabled' => 'disabled']) }}
-                                            {!! $errors->first('date_birth', '<div class="invalid-feedback">:message</div>') !!}
+                                            @if ($people->date_birth)
+                                                <br>
+                                                {{ date('d/m/Y', strtotime($people->date_birth)) }}
+                                            @else
+                                                <span class="badge badge-secondary">No proporcionado</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
