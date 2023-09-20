@@ -24,58 +24,42 @@ class PeopleController extends Controller
     {
         $query = People::query();
 
-        // Filtrar por nombre (name)
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        // Aplicar filtros seleccionados en el modal
+        if ($request->has('filters')) {
+            $filters = $request->input('filters');
+
+            // Itera a través de los filtros seleccionados
+            foreach ($filters as $filter) {
+                // Verifica qué filtro se ha seleccionado y aplica la condición correspondiente
+                switch ($filter) {
+                    case 'name':
+                        $query->whereNotNull('name');
+                        break;
+                    case 'lastname':
+                        $query->whereNotNull('lastname');
+                        break;
+                    case 'province':
+                        $query->whereNotNull('province');
+                        break;
+                        // Agrega más casos según los filtros disponibles
+                }
+            }
         }
 
-        // Filtrar por apellido (lastname)
-        if ($request->has('lastname')) {
-            $query->where('lastname', 'like', '%' . $request->input('lastname') . '%');
-        }
-
-        // Filtrar por email
-        if ($request->has('email')) {
-            $query->where('email', 'like', '%' . $request->input('email') . '%');
-        }
-
-        // Filtrar por provincia
-        if ($request->has('province')) {
-            $query->where('province', 'like', '%' . $request->input('province') . '%');
-        }
-
-        // Filtrar por código postal (zip_code)
-        if ($request->has('zip_code')) {
-            $query->where('zip_code', 'like', '%' . $request->input('zip_code') . '%');
-        }
-
-        // Filtrar por dirección (direction)
-        if ($request->has('direction')) {
-            $query->where('direction', 'like', '%' . $request->input('direction') . '%');
-        }
-
-        // Filtrar por sexo (sex)
-        if ($request->has('sex')) {
-            $query->where('sex', $request->input('sex'));
-        }
-
-        // Filtrar por edad (age)
-        if ($request->has('age')) {
-            $query->where('age', $request->input('age'));
-        }
-
-        // Filtrar por DNI
-        if ($request->has('dni')) {
-            $query->where('dni', 'like', '%' . $request->input('dni') . '%');
-        }
-
-        // Función de búsqueda
+        // Función de búsqueda en todos los campos
         if ($request->has('search')) {
             $searchTerm = $request->input('search');
             $query->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
                     ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('email', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('email', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('province', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('zip_code', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('direction', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('sex', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('age', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('dni', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('date_birth', 'like', '%' . $searchTerm . '%');
             });
         }
 

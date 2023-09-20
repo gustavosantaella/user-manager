@@ -15,39 +15,68 @@
                                 {{ __('Personas') }}
                             </span>
                             <!-- Agregar el formulario de búsqueda y filtros aquí -->
-                            <div class="mb-3">
-                                <form action="{{ route('people.index') }}" method="GET" class="form-inline">
+                            <div class="form-inline">
+                                <form action="{{ route('people.index') }}" method="GET" class="">
                                     <!-- Input de búsqueda por nombre, con el nombre "search" -->
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="search" name="search"
-                                            value="{{ request('search') }}" placeholder="Buscar: ">
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control" id="search" name="search"
+                                                value="{{ request('search') }}">
+                                        </div>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-primary btn-sm" type="submit">Buscar <i
+                                                    class="fab fa-searchengin"></i></button>
+                                        </div>
                                     </div>
-
-                                    <!-- Multiselect para los filtros -->
-                                    <div class="form-group ml-3">
-                                        <select class="form-control select2" id="filters" name="filters[]"
-                                            placeholder="Filtrar:" multiple="multiple">
-                                            <option disabled value="">Filtrar: </option>
-                                            <option value="name" @if (in_array('name', request('filters', []))) selected @endif>Nombre
-                                            </option>
-                                            <option value="lastname" @if (in_array('lastname', request('filters', []))) selected @endif>
-                                                Apellido</option>
-                                            <option value="email" @if (in_array('email', request('filters', []))) selected @endif>Correo
-                                            </option>
-                                            <option value="province" @if (in_array('province', request('filters', []))) selected @endif>
-                                                Provincia</option>
-                                            <!-- Agrega más opciones para otros campos de filtro aquí -->
-                                        </select>
-                                    </div>
-
-                                    <!-- Botón de búsqueda -->
-                                    <button type="submit" class="btn btn-primary ml-3">Buscar</button>
-
-
 
                                 </form>
 
+                                <button type="button" class="btn btn-primary btn-sm mx-3" data-toggle="modal"
+                                    data-target="#filtersModal">
+                                    Filtros
+                                </button>
                             </div>
+
+
+                            <!-- Modal de filtros -->
+                            <div class="modal fade" id="filtersModal" tabindex="-1" role="dialog"
+                                aria-labelledby="filtersModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="filtersModalLabel">Seleccionar filtros</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('people.index') }}" method="GET">
+                                                @csrf
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="filters[]"
+                                                        value="name">
+                                                    <label class="form-check-label">Nombre</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="filters[]"
+                                                        value="lastname">
+                                                    <label class="form-check-label">Apellido</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="filters[]"
+                                                        value="province">
+                                                    <label class="form-check-label">Provincia</label>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
 
                             <div class="float-right">
                                 <a href="{{ route('people.create') }}" class="btn btn-primary btn-sm float-right ml-2"
