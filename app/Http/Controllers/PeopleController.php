@@ -76,9 +76,10 @@ class PeopleController extends Controller
         }
 
         $people = $query->paginate();
+        $persons = $query->paginate();
 
-        return view('people.index', compact('people'))
-            ->with('i', ($request->input('page', 1) - 1) * $people->perPage());
+        return view('people.index', compact('people', 'persons'))
+            ->with('i', ($request->input('page', 1) - 1) * $persons->perPage());
     }
 
     /**
