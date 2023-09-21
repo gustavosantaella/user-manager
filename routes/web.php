@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PeopleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,5 +25,7 @@ Route::group([
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::resource('/people', App\Http\Controllers\PeopleController::class);
+    Route::get('/home-export', [PeopleController::class, "export"])->name('people.export');
+    Route::post('import', [PeopleController::class, "import"])->name('people.import');
 
 });
