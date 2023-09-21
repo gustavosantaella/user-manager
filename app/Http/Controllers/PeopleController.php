@@ -24,48 +24,9 @@ class PeopleController extends Controller
     {
         $query = People::query();
 
-        // Aplicar filtros seleccionados en el modal
-        if ($request->has('filters')) {
-            $filters = $request->input('filters');
-
-            // Itera a través de los filtros seleccionados
-            foreach ($filters as $filter) {
-                // Verifica qué filtro se ha seleccionado y aplica la condición correspondiente
-                switch ($filter) {
-                    case 'name':
-                        $query->whereNotNull('name');
-                        break;
-                    case 'lastname':
-                        $query->whereNotNull('lastname');
-                        break;
-                    case 'province':
-                        $query->whereNotNull('province');
-                        break;
-                    case 'zip_code':
-                        $query->whereNotNull('zip_code');
-                        break;
-                    case 'dni':
-                        $query->whereNotNull('dni');
-                        break;
-                    case 'direction':
-                        $query->whereNotNull('direction');
-                        break;
-                    case 'sex':
-                        $query->whereNotNull('sex');
-                        break;
-                    case 'age':
-                        $query->whereNotNull('age');
-                        break;
-                    case 'date_birth':
-                        $query->whereNotNull('date_birth');
-                        break;
-                }
-            }
-        }
-
         // Función de búsqueda en todos los campos
-        if ($request->has('search')) {
-            $searchTerm = $request->input('search');
+        $searchTerm = $request->input('search_query');
+        if (!empty($searchTerm)) {
             $query->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
                     ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
@@ -80,10 +41,45 @@ class PeopleController extends Controller
             });
         }
 
-        $people = $query->paginate();
+        // Aplicar filtros seleccionados en el modal
+        if ($request->has('filters')) {
+            $filters = $request->input('filters');
 
-        return view('people.index', compact('people'))
-            ->with('i', ($request->input('page', 1) - 1) * $people->perPage());
+            // Verifica qué filtros se han seleccionado y aplica las condiciones correspondientes
+            if (in_array('name', $filters)) {
+                $query->whereNotNull('name');
+            }
+            if (in_array('lastname', $filters)) {
+                $query->whereNotNull('lastname');
+            }
+            if (in_array('province', $filters)) {
+                $query->whereNotNull('province');
+            }
+            if (in_array('zip_code', $filters)) {
+                $query->whereNotNull('zip_code');
+            }
+            if (in_array('dni', $filters)) {
+                $query->whereNotNull('dni');
+            }
+            if (in_array('direction', $filters)) {
+                $query->whereNotNull('direction');
+            }
+            if (in_array('sex', $filters)) {
+                $query->whereNotNull('sex');
+            }
+            if (in_array('age', $filters)) {
+                $query->whereNotNull('age');
+            }
+            if (in_array('date_birth', $filters)) {
+                $query->whereNotNull('date_birth');
+            }
+        }
+
+        $people = $query->paginate();
+        $persons = $query->paginate();
+
+        return view('people.index', compact('people', 'persons'))
+            ->with('i', ($request->input('page', 1) - 1) * $persons->perPage());
     }
 
     /**

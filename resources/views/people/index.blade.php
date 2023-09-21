@@ -20,14 +20,19 @@
                                     <!-- Input de búsqueda por nombre, con el nombre "search" -->
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="text" class="form-control" id="search" name="search"
-                                                value="{{ request('search') }}">
+                                            <input type="text" class="form-control" id="search_query" name="search_query"
+                                                value="{{ request('search_query') }}">
                                         </div>
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-primary btn-sm" type="submit">Buscar <i
                                                     class="fab fa-searchengin"></i></button>
                                         </div>
                                     </div>
+                                    @if (request()->has('filters'))
+                                        @foreach (request('filters') as $filter)
+                                            <input type="hidden" name="filters[]" value="{{ $filter }}">
+                                        @endforeach
+                                    @endif
 
                                 </form>
 
@@ -122,6 +127,10 @@
                                                     </div>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+                                                @if (request()->has('search_query'))
+                                                    <input type="hidden" name="search_query"
+                                                        value="{{ request('search_query') }}">
+                                                @endif
                                             </form>
                                         </div>
                                     </div>
@@ -167,7 +176,8 @@
                                                         <div class="custom-file">
                                                             <input type="file" class="custom-file-input"
                                                                 id="inputGroupFile01"
-                                                                aria-describedby="inputGroupFileAddon01" name="file">
+                                                                aria-describedby="inputGroupFileAddon01" name="file"
+                                                                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                                                             <label class="custom-file-label"
                                                                 for="inputGroupFile01">Seleccionar archivo: </label>
                                                         </div>
@@ -315,7 +325,33 @@
                     </div>
 
                 </div>
-                {{--  {!! $people->links() !!} --}}
+                <nav aria-label="Page navigation example" class="float-end float-right">
+                    <ul class="pagination float-end">
+                        @if ($persons->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                        @else
+                            <li class="page-item"><a class="page-link"
+                                    href="{{ $persons->previousPageUrl() }}">Previous</a></li>
+                        @endif
+
+                        @foreach ($persons->getUrlRange(1, $persons->lastPage()) as $page => $url)
+                            @if ($page == $persons->currentPage())
+                                <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                            @else
+                                <li class="page-item"><a class="page-link"
+                                        href="{{ $url }}">{{ $page }}</a></li>
+                            @endif
+                        @endforeach
+
+                        @if ($persons->hasMorePages())
+                            <li class="page-item"><a class="page-link" href="{{ $persons->nextPageUrl() }}">Next</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">Next</span></li>
+                        @endif
+                    </ul>
+                </nav>
+
             </div>
         </div>
     </div>
@@ -326,6 +362,7 @@
     <link rel="stylesheet" href="/css/admin_custom.css">
     <!-- Select2 --->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 @stop
 
 @section('js')
@@ -334,4 +371,29 @@
     <script>
         $('.select2').select2();
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Captura el cambio en el input de archivo
+            $('#inputGroupFile01').on('change', function() {
+                // Obtiene el nombre del archivo seleccionado
+                var fileName = $(this).val().split('\\').pop();
+
+                // Actualiza el label con el nombre del archivo
+                $('.custom-file-label').text(fileName);
+            });
+
+            // Valida que el archivo seleccionado tenga la extensión .xlsx
+            $('form').on('submit', function(e) {
+                var fileName = $('#inputGroupFile01').val();
+                var extension = fileName.split('.').pop().toLowerCase();
+
+                if (extension !== 'xlsx') {
+                    e.preventDefault();
+                    alert('Por favor, selecciona un archivo con extensión .xlsx.');
+                }
+            });
+        });
+    </script>
+
 @stop
