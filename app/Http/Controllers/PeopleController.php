@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PeopleExport;
 use App\Http\Controllers\Controller;
+use App\Imports\PeopleImport;
 use App\Models\People;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Class PeopleController
@@ -17,12 +20,66 @@ class PeopleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $people = People::paginate(20);
+        $query = People::query();
 
-        return view('people.index', compact('people'))
-            ->with('i', (request()->input('page', 1) - 1) * $people->perPage());
+        // Función de búsqueda en todos los campos
+        $searchTerm = $request->input('search_query');
+        if (!empty($searchTerm)) {
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('email', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('province', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('zip_code', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('direction', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('sex', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('age', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('dni', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('date_birth', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Aplicar filtros seleccionados en el modal
+        if ($request->has('filters')) {
+            $filters = $request->input('filters');
+
+            // Verifica qué filtros se han seleccionado y aplica las condiciones correspondientes
+            if (in_array('name', $filters)) {
+                $query->whereNotNull('name');
+            }
+            if (in_array('lastname', $filters)) {
+                $query->whereNotNull('lastname');
+            }
+            if (in_array('province', $filters)) {
+                $query->whereNotNull('province');
+            }
+            if (in_array('zip_code', $filters)) {
+                $query->whereNotNull('zip_code');
+            }
+            if (in_array('dni', $filters)) {
+                $query->whereNotNull('dni');
+            }
+            if (in_array('direction', $filters)) {
+                $query->whereNotNull('direction');
+            }
+            if (in_array('sex', $filters)) {
+                $query->whereNotNull('sex');
+            }
+            if (in_array('age', $filters)) {
+                $query->whereNotNull('age');
+            }
+            if (in_array('date_birth', $filters)) {
+                $query->whereNotNull('date_birth');
+            }
+        }
+
+        $people = $query->paginate();
+        $persons = $query->paginate();
+
+        return view('people.index', compact('people', 'persons'))
+            ->with('i', ($request->input('page', 1) - 1) * $persons->perPage());
     }
 
     /**
@@ -46,16 +103,7 @@ class PeopleController extends Controller
     {
         request()->validate(People::$rules);
 
-        // Crea una instancia de People con los datos proporcionados
-        $peopleData = $request->only(['name', 'lastname', 'email', 'province', 'zip_code', 'direction', 'sex', 'age', 'dni']);
-
-        // Verifica si se proporciona la fecha de nacimiento en el formulario
-        if ($request->filled('date_birth')) {
-            $peopleData['date_birth'] = $request->input('date_birth');
-        }
-
-        // Crea el registro en la base de datos
-        $people = People::create($peopleData);
+        $people = People::create($request->all());
 
         return redirect()->route('people.index')
             ->with('success', 'People created successfully.');
@@ -69,7 +117,7 @@ class PeopleController extends Controller
      */
     public function show($id)
     {
-        $people = People::findOrFail($id);
+        $people = People::find($id);
 
         return view('people.show', compact('people'));
     }
@@ -82,7 +130,7 @@ class PeopleController extends Controller
      */
     public function edit($id)
     {
-        $people = People::findOrFail($id);
+        $people = People::find($id);
 
         return view('people.edit', compact('people'));
     }
@@ -94,27 +142,13 @@ class PeopleController extends Controller
      * @param  People $people
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, People $people)
+    public function update(Request $request, $id)
     {
-        // Valida los campos requeridos y otras reglas de validación
-        $request->validate([
-            'name' => 'required|string|max:255',
-            // Otras reglas de validación para otros campos si los hay
-        ]);
+        request()->validate(People::$rules);
 
-        // Actualiza los datos de People con los valores proporcionados en el formulario
-        $peopleData = $request->only(['name', 'lastname', 'email', 'province', 'zip_code', 'direction', 'sex', 'age', 'dni']);
-
-        // Verifica si se proporciona la fecha de nacimiento en el formulario
-        if ($request->filled('date_birth')) {
-            $peopleData['date_birth'] = $request->input('date_birth');
-        } else {
-            // Si no se proporciona fecha de nacimiento, establece el campo como null
-            $peopleData['date_birth'] = null;
-        }
-
-        // Actualiza el registro en la base de datos
-        $people->update($peopleData);
+        $people = People::find($id);
+        $people->fill($request->all());
+        $people->save();
 
         return redirect()->route('people.index')
             ->with('success', 'People updated successfully.');
@@ -127,9 +161,19 @@ class PeopleController extends Controller
      */
     public function destroy($id)
     {
-        $people = People::findOrFail($id)->delete();
+        $people = People::find($id)->delete();
 
         return redirect()->route('people.index')
             ->with('success', 'People deleted successfully');
+    }
+    public function export()
+    {
+        return Excel::download(new PeopleExport, 'people.xlsx');
+    }
+    public function import()
+    {
+        Excel::import(new PeopleImport, request()->file('file'));
+
+        return redirect()->back()->with('success', 'Datos importados correctamente.');
     }
 }
