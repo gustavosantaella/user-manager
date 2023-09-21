@@ -41,7 +41,24 @@ class PeopleController extends Controller
                     case 'province':
                         $query->whereNotNull('province');
                         break;
-                        // Agrega más casos según los filtros disponibles
+                    case 'zip_code':
+                        $query->whereNotNull('zip_code');
+                        break;
+                    case 'dni':
+                        $query->whereNotNull('dni');
+                        break;
+                    case 'direction':
+                        $query->whereNotNull('direction');
+                        break;
+                    case 'sex':
+                        $query->whereNotNull('sex');
+                        break;
+                    case 'age':
+                        $query->whereNotNull('age');
+                        break;
+                    case 'date_birth':
+                        $query->whereNotNull('date_birth');
+                        break;
                 }
             }
         }

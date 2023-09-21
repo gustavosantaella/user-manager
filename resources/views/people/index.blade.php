@@ -52,22 +52,75 @@
                                         <div class="modal-body">
                                             <form action="{{ route('people.index') }}" method="GET">
                                                 @csrf
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="filters[]"
-                                                        value="name">
-                                                    <label class="form-check-label">Nombre</label>
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="filters[]"
+                                                                value="name">
+                                                            <label class="form-check-label">Nombre</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="filters[]"
+                                                                value="lastname">
+                                                            <label class="form-check-label">Apellido</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="filters[]"
+                                                                value="province">
+                                                            <label class="form-check-label">Provincia</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="filters[]"
-                                                        value="lastname">
-                                                    <label class="form-check-label">Apellido</label>
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="filters[]"
+                                                                value="zip_code">
+                                                            <label class="form-check-label">Codigo postal</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="filters[]"
+                                                                value="direction">
+                                                            <label class="form-check-label">Direccion</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="filters[]"
+                                                                value="sex">
+                                                            <label class="form-check-label">Sexo</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="filters[]"
-                                                        value="province">
-                                                    <label class="form-check-label">Provincia</label>
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="filters[]"
+                                                                value="age">
+                                                            <label class="form-check-label">Edad</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="filters[]" value="dni">
+                                                            <label class="form-check-label">DNI</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="filters[]" value="date_birth">
+                                                            <label class="form-check-label">Fecha de nacimiento</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
-
                                                 <button type="submit" class="btn btn-primary">Aplicar filtros</button>
                                             </form>
                                         </div>
@@ -84,8 +137,8 @@
                                     {{ __('Crear nuevo') }}
                                 </a>
                                 <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-warning btn-sm float-right ml-2" data-toggle="modal"
-                                    data-target="#staticBackdrop">
+                                <button type="button" class="btn btn-warning btn-sm float-right ml-2"
+                                    data-toggle="modal" data-target="#staticBackdrop">
                                     Importar datos
                                 </button>
 
@@ -107,7 +160,8 @@
                                                     @csrf
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text" id="inputGroupFileAddon01">Subir
+                                                            <span class="input-group-text"
+                                                                id="inputGroupFileAddon01">Subir
                                                                 xlsx</span>
                                                         </div>
                                                         <div class="custom-file">
