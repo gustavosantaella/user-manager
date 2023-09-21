@@ -20,14 +20,19 @@
                                     <!-- Input de búsqueda por nombre, con el nombre "search" -->
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="text" class="form-control" id="search" name="search"
-                                                value="{{ request('search') }}">
+                                            <input type="text" class="form-control" id="search_query" name="search_query"
+                                                value="{{ request('search_query') }}">
                                         </div>
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-primary btn-sm" type="submit">Buscar <i
                                                     class="fab fa-searchengin"></i></button>
                                         </div>
                                     </div>
+                                    @if (request()->has('filters'))
+                                        @foreach (request('filters') as $filter)
+                                            <input type="hidden" name="filters[]" value="{{ $filter }}">
+                                        @endforeach
+                                    @endif
 
                                 </form>
 
@@ -122,6 +127,10 @@
                                                     </div>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+                                                @if (request()->has('search_query'))
+                                                    <input type="hidden" name="search_query"
+                                                        value="{{ request('search_query') }}">
+                                                @endif
                                             </form>
                                         </div>
                                     </div>
