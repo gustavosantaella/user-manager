@@ -165,7 +165,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <form action="{{ route('people.import') }}" method="POST"
-                                                    enctype="multipart/form-data">
+                                                    enctype="multipart/form-data" id="formImport">
                                                     @csrf
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
@@ -384,7 +384,7 @@
             });
 
             // Valida que el archivo seleccionado tenga la extensión .xlsx
-            $('form').on('submit', function(e) {
+            $('#formImport').on('submit', function(e) {
                 var fileName = $('#inputGroupFile01').val();
                 var extension = fileName.split('.').pop().toLowerCase();
 
