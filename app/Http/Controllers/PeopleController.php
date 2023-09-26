@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ModelExport;
 use App\Exports\PeopleExport;
 use App\Http\Controllers\Controller;
 use App\Imports\PeopleImport;
@@ -169,6 +170,10 @@ class PeopleController extends Controller
     public function export()
     {
         return Excel::download(new PeopleExport, 'people.xlsx');
+    }
+    public function download()
+    {
+        return Excel::download(new ModelExport, 'model.xlsx');
     }
     public function import()
     {

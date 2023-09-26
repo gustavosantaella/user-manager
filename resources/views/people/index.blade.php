@@ -146,7 +146,7 @@
                                     {{ __('Crear nuevo') }}
                                 </a>
                                 <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-warning btn-sm float-right ml-2"
+                                <button type="button" class="btn btn-secondary btn-sm float-right ml-2"
                                     data-toggle="modal" data-target="#staticBackdrop">
                                     Importar datos
                                 </button>
@@ -194,6 +194,8 @@
                                 </div>
                                 <a href="{{ route('people.export') }}" target="_blank"
                                     class="btn btn-success btn-sm float-right ml-2">Exportar datos</a>
+                                <a href="{{ route('people.download') }}" target="_blank"
+                                    class="btn btn-info btn-sm float-right ml-2">Descargar modelo xlsx</a>
 
                             </div>
                         </div>
@@ -311,9 +313,10 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-link"
-                                                        onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')">
+                                                        onclick="return confirmDeleteUser(event)">
                                                         <i class="fa fa-fw fa-trash text-danger"></i>
                                                     </button>
+
                                                 </form>
                                             </td>
 
@@ -372,6 +375,7 @@
         $('.select2').select2();
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             // Captura el cambio en el input de archivo
@@ -390,10 +394,39 @@
 
                 if (extension !== 'xlsx') {
                     e.preventDefault();
-                    alert('Por favor, selecciona un archivo con extensión .xlsx.');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Por favor, selecciona un archivo con extensión .xlsx.'
+                    });
                 }
+
+
             });
         });
+    </script>
+    <script>
+        async function confirmDeleteUser(event) {
+            event.preventDefault(); // Evita la acción predeterminada del botón
+
+            const result = await Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¿Estás seguro de que deseas eliminar este usuario?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+            });
+
+            if (result.isConfirmed) {
+                // Aquí puedes realizar cualquier acción adicional antes de continuar
+                // Por ejemplo, puedes enviar una solicitud AJAX para eliminar el usuario
+
+                // Luego, puedes permitir que la acción del botón continúe
+                event.target.closest('form').submit();
+            }
+        }
     </script>
 
 @stop
