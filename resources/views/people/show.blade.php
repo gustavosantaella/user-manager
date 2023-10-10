@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', '{{ $people->name }}')
+@section('title', $people->name)
 
 
 @section('content')
