@@ -14,7 +14,7 @@ return [
     |
      */
 
-    'title' => 'User Manager',
+    'title' => '𝘽𝙞𝙠𝙚 𝘾𝙡𝙪𝙗 𝙁𝙞𝙩𝙣𝙚𝙨𝙨',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,7 +63,7 @@ return [
     |
      */
 
-    'logo' => '<b>User</b>Manager',
+    'logo' => '𝘽𝙞𝙠𝙚 𝘾𝙡𝙪𝙗 𝙁𝙞𝙩𝙣𝙚𝙨𝙨',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
